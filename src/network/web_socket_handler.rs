@@ -44,7 +44,12 @@ async fn handle_socket(socket: WebSocket, state: AppState) {
     let (sender, mut receiver) = socket.split();
 
     let (out_tx, mut out_rx) = mpsc::unbounded_channel::<OutgoingMsg>();
-
+    // sending the id of player privately
+    let _ = out_tx.send(
+    OutgoingMsg::Private(
+        PrivateMsg::Id { p_id: player_id }
+            )
+    );
     // ----- WRITING TASK -----
     let writer_task = tokio::spawn(async move {
         let mut sender = sender;
@@ -73,7 +78,7 @@ async fn handle_socket(socket: WebSocket, state: AppState) {
             // forward public event
             let _ = public_tx.send(OutgoingMsg::Public(ev.clone()));
 
-            // 🔒 send hand ONCE when StartGame is observed
+            // send hand ONCE when StartGame is observed
             if matches!(ev, Event::StartGame) && !hand_sent {
                 let hand = {
                     let game = game_for_broadcast.read().await;
@@ -86,7 +91,7 @@ async fn handle_socket(socket: WebSocket, state: AppState) {
                             PrivateMsg::Hand { cards }
                         )
                     );
-                    hand_sent = true; // ✅ exactly once
+                    hand_sent = true; //sends cards exactly once
                 }
             }
         }
@@ -126,10 +131,11 @@ async fn handle_socket(socket: WebSocket, state: AppState) {
 
                 // broadcast turn info ONCE
                 if started_game {
-                    let turn = {
+                    let (turn,seating) = {
                         let game = game.read().await;
-                        game.get_turn()
+                        (game.get_turn() , game.get_seats())
                     };
+                    let _ = tx.send(Event::SeatOrder { seats: seating });
                     let _ = tx.send(Event::NextTurn { player_id: turn });
                 }
             }

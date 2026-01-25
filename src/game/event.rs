@@ -52,10 +52,13 @@ pub enum Event {
     Error {
         message: String,
     },
-    MarkReady {p_id : PlayerId}
+    MarkReady {p_id : PlayerId},
+
+    SeatOrder {seats : Vec<PlayerId>}
 
 }
 #[derive(Serialize)]
 pub enum PrivateMsg {
-    Hand {cards : Vec<Card>}
+    Hand {cards : Vec<Card>},
+    Id {p_id : PlayerId}
 }

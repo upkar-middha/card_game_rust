@@ -134,6 +134,10 @@ impl Game{
         self.phase
     }
 
+    pub fn get_seats(& self) -> Vec<PlayerId> {
+        self.players.iter().map(|p| p.id).collect()
+    }
+
     /// returns true if cards are dealt else returns false
     pub fn cards_dealt(& self) -> bool {
         return self.hand_dealt;
