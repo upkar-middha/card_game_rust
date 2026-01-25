@@ -1,0 +1,6 @@
+{
+    "Event" : "event",
+    "from" : "p_id",
+    "to" : "p_id",
+    "card" : ["card1" , "card2"]
+}

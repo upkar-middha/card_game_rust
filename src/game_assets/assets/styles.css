@@ -1,0 +1,403 @@
+/* ========================================
+   Global Styles
+   ======================================== */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --text-light: #ecf0f1;
+    --bg-dark: #1a1a1a;
+    --card-width: 80px;
+    --card-height: 120px;
+    --animation-duration: 0.3s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--bg-dark) 100%);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#app {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+}
+
+.screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.screen.hidden {
+    display: none;
+}
+
+/* ========================================
+   Lobby Screen
+   ======================================== */
+.lobby-container {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+}
+
+.lobby-container h1 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    color: var(--secondary-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary {
+    background: var(--secondary-color);
+    color: white;
+    margin: 1rem 0;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.status-text {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    opacity: 0.8;
+}
+
+/* ========================================
+   Game Screen
+   ======================================== */
+.game-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    min-height: 60px;
+}
+
+.turn-info {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    flex: 1;
+}
+
+.game-info {
+    display: flex;
+    gap: 2rem;
+    font-size: 0.95rem;
+}
+
+.game-info > div {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+}
+
+/* ========================================
+   Opponents Area
+   ======================================== */
+.opponents-area {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    min-height: 120px;
+}
+
+.opponent {
+    text-align: center;
+    position: relative;
+}
+
+.opponent-name {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.opponent-cards {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 120px;
+}
+
+.opponent-card {
+    width: var(--card-width);
+    height: var(--card-height);
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-size: 0.6rem;
+    font-weight: bold;
+}
+
+.opponent-card::after {
+    content: '?';
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+/* ========================================
+   Play Area & Pile
+   ======================================== */
+.play-area {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+}
+
+.pile-container {
+    position: relative;
+    width: 200px;
+    height: 180px;
+    perspective: 1000px;
+}
+
+.pile {
+    position: absolute;
+    width: var(--card-width);
+    height: var(--card-height);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 600;
+}
+
+.pile-card {
+    position: absolute;
+    width: var(--card-width);
+    height: var(--card-height);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
+    border: 2px solid #333;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-size: 1.4rem;
+    font-weight: bold;
+    z-index: 10;
+}
+
+/* ========================================
+   Player Hand
+   ======================================== */
+.player-area {
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.hand {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-height: var(--card-height);
+    align-items: flex-end;
+}
+
+.card {
+    width: var(--card-width);
+    height: var(--card-height);
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
+    border: 2px solid #333;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-size: 1.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    position: relative;
+    user-select: none;
+}
+
+.card:hover:not(.card--disabled) {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+}
+
+.card:active:not(.card--disabled) {
+    transform: translateY(-4px);
+}
+
+.card--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   Animations
+   ======================================== */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardFly {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--tx, 0), var(--ty, 0)) scale(0.8);
+    }
+}
+
+@keyframes pileFlash {
+    0%, 100% {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    }
+    50% {
+        box-shadow: 0 8px 24px rgba(39, 174, 96, 0.8);
+    }
+}
+
+@keyframes discardPile {
+    0% {
+        transform: translate(-50%, -50%) rotateZ(0deg) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) rotateZ(10deg) scale(1.05);
+    }
+    100% {
+        transform: translate(-50%, -60%) rotateZ(30deg) scale(0.8);
+        opacity: 0;
+    }
+}
+
+.card--animating {
+    animation: cardFly var(--animation-duration) ease-out forwards;
+}
+
+.pile-card--active {
+    animation: pileFlash 0.6s ease-in-out;
+}
+
+.pile-card--discard {
+    animation: discardPile 0.5s ease-in-out forwards;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 768px) {
+    .lobby-container h1 {
+        font-size: 2rem;
+    }
+
+    .card {
+        width: 70px;
+        height: 105px;
+        font-size: 0.9rem;
+    }
+
+    .opponent-card {
+        width: 70px;
+        height: 105px;
+    }
+
+    .opponents-area {
+        gap: 1.5rem;
+    }
+
+    .game-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .game-info {
+        width: 100%;
+        justify-content: space-around;
+    }
+}

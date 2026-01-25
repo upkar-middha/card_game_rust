@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Game</title>
+    <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Lobby Screen -->
+        <div id="lobby" class="screen">
+            <div class="lobby-container">
+                <h1>Card Game</h1>
+                <button id="startBtn" class="btn btn-primary">Start Game</button>
+                <p id="status" class="status-text">Waiting to connect...</p>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game" class="screen hidden">
+            <div class="game-container">
+                <!-- Game Header -->
+                <div class="game-header">
+                    <div class="turn-info">
+                        <span id="turnPlayer"></span>
+                    </div>
+                    <div class="game-info">
+                        <div>Round: <span id="roundNum">0</span></div>
+                        <div>Pile: <span id="pileCount">0</span></div>
+                    </div>
+                </div>
+
+                <!-- Opponents Area -->
+                <div class="opponents-area" id="opponentsArea"></div>
+
+                <!-- Play Area -->
+                <div class="play-area">
+                    <div class="pile-container">
+                        <div class="pile" id="pile"></div>
+                    </div>
+                </div>
+
+                <!-- Player Hand Area -->
+                <div class="player-area">
+                    <div class="hand" id="hand"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/app.js"></script>
+</body>
+</html>
