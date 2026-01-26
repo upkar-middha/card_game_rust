@@ -2,53 +2,190 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Card Game</title>
+
     <link rel="stylesheet" href="/assets/styles.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+            height: 100vh;
+        }
+
+        .screen {
+            display: none;
+            height: 100%;
+        }
+
+        .screen.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ---------- LOBBY ---------- */
+
+        #lobby {
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #playBtn {
+            padding: 12px 24px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #status {
+            opacity: 0.85;
+            font-size: 16px;
+        }
+
+        /* ---------- GAME ---------- */
+
+        #game {
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Opponents */
+        #opponents {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .opponent {
+            background: #1f2933;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 120px;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        /* Highlight active opponent */
+        .opponent.active-turn {
+            outline: 3px solid #22c55e;
+            box-shadow: 0 0 12px #22c55e;
+            transform: translateY(-2px);
+        }
+
+        /* Center pile */
+        #center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 120px;
+        }
+
+        #pile {
+            width: 80px;
+            height: 110px;
+            background: #374151;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        /* Player hand */
+        #hand {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            transition: opacity 0.2s, box-shadow 0.2s;
+        }
+
+        /* Disable interaction when not your turn */
+        #hand.disabled {
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        /* Highlight YOUR turn */
+        #hand.active-turn {
+            outline: 3px solid #22c55e;
+            box-shadow: 0 0 12px #22c55e;
+            padding: 6px;
+            border-radius: 10px;
+        }
+
+        .card {
+            width: 70px;
+            height: 100px;
+            background: #ffffff;
+            color: #111827;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            transition: transform 0.15s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+    </style>
 </head>
 <body>
-    <div id="app">
-        <!-- Lobby Screen -->
-        <div id="lobby" class="screen">
-            <div class="lobby-container">
-                <h1>Card Game</h1>
-                <button id="startBtn" class="btn btn-primary">Start Game</button>
-                <p id="status" class="status-text">Waiting to connect...</p>
-            </div>
-        </div>
 
-        <!-- Game Screen -->
-        <div id="game" class="screen hidden">
-            <div class="game-container">
-                <!-- Game Header -->
-                <div class="game-header">
-                    <div class="turn-info">
-                        <span id="turnPlayer"></span>
-                    </div>
-                    <div class="game-info">
-                        <div>Round: <span id="roundNum">0</span></div>
-                        <div>Pile: <span id="pileCount">0</span></div>
-                    </div>
-                </div>
+<!-- ========================= -->
+<!-- LOBBY SCREEN -->
+<!-- ========================= -->
 
-                <!-- Opponents Area -->
-                <div class="opponents-area" id="opponentsArea"></div>
+<div id="lobby" class="screen active">
+    <h1>Card Game</h1>
+    <button id="playBtn">Play</button>
+    <p id="status">Connecting...</p>
+</div>
 
-                <!-- Play Area -->
-                <div class="play-area">
-                    <div class="pile-container">
-                        <div class="pile" id="pile"></div>
-                    </div>
-                </div>
+<!-- ========================= -->
+<!-- GAME SCREEN -->
+<!-- ========================= -->
 
-                <!-- Player Hand Area -->
-                <div class="player-area">
-                    <div class="hand" id="hand"></div>
-                </div>
-            </div>
-        </div>
+<div id="game" class="screen">
+
+    <!-- Opponents -->
+    <div id="opponents"></div>
+
+    <!-- Center pile -->
+    <div id="center">
+        <div id="pile">Pile</div>
     </div>
 
-    <script src="/assets/app.js"></script>
+    <!-- Your hand -->
+    <div id="hand"></div>
+
+</div>
+
+<!-- ========================= -->
+<!-- END GAME SCREEN -->
+<!-- ========================= -->
+
+<div id="endGame" class="screen">
+    <div>
+        <h1 id="endTitle"></h1>
+        <p id="endMessage"></p>
+        <button onclick="location.reload()">Restart</button>
+    </div>
+</div>
+
+
+<script src="/assets/ws_test.js"></script>
 </body>
 </html>

@@ -26,12 +26,12 @@ pub struct Game{
     phase : GamePhase,
     turn : PlayerId,
     turn_stack : Vec<(Card , PlayerId)>,
-    players : Vec<Players>,
+    players : Vec<Players>, // ready ko false krna h
     deck : Vec<Card>,
     first : PlayerId,
     id_set : HashSet<PlayerId>,
-    hand_dealt : bool,
-    first_move : bool,
+    hand_dealt : bool, // isko false 
+    first_move : bool, // isko false
     // iter : u32,
 }
 

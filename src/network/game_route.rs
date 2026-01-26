@@ -21,7 +21,7 @@ pub fn build_router(game : Arc<RwLock<Game>>) -> Router {
     .route("/ws" , get(ws_handler))
     .nest_service(
             "/assets",
-            ServeDir::new("game_assets/assets"),
+            ServeDir::new("src/game_assets/assets"),
     )
     .with_state(state)
 }

@@ -401,3 +401,59 @@ body {
         justify-content: space-around;
     }
 }
+
+
+
+.hand.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+
+.active-turn {
+    outline: 3px solid #22c55e;
+    box-shadow: 0 0 12px #22c55e;
+}
+
+/* 
+.card {
+    position: relative;
+    width: 70px;
+    height: 100px;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 6px;
+    box-sizing: border-box;
+    font-weight: bold;
+}
+
+.card.red {
+    color: #dc2626;
+}
+
+.card.black {
+    color: #111827;
+}
+
+.card-suit {
+    font-size: 28px;
+    text-align: center;
+    line-height: 1;
+}
+
+.card-rank {
+    font-size: 12px;
+}
+
+.card-rank.top {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+}
+
+.card-rank.bottom {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    transform: rotate(180deg);
+} */
