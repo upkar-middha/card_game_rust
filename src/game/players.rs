@@ -24,14 +24,18 @@ pub struct Players {
     pub id: PlayerId,
     pub hand: Vec<Card>,
     pub ready : bool,
+    pub player_state : PlayerState,
+    pub name : String,
 }
 
 impl Players {
-    pub fn new(id: PlayerId) -> Self {
+    pub fn new(id: PlayerId , name:String) -> Self {
         Self {
             id,
             hand: Vec::new(),
             ready : false,
+            player_state : PlayerState::InGame,
+            name,
         }
     }
 
@@ -45,4 +49,18 @@ impl Players {
         //     None
         // }
     }
+}
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    Eq,
+    PartialEq,
+    Hash,
+    Serialize,
+    Deserialize
+)]
+pub enum PlayerState {
+    Won,
+    InGame,
 }

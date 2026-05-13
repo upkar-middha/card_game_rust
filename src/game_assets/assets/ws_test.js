@@ -1,10 +1,13 @@
 // ===============================
 // Client state
 // ===============================
-
+// if a player playeed fast just after last player in cycle played , discard pile does not work properly
 let player_id = null;
 let is_ready = false;
 let game_started = false;
+let toastTimeout = null;
+let discardTimeout = null;
+
 
 // ===============================
 // UI
@@ -35,6 +38,45 @@ const SUIT_COLOR = {
     Spade: "black",
     Club: "black"
 };
+
+
+
+const RANK_TO_FILENAME = {
+    Ace: "ace",
+    Two: "2",
+    Three: "3",
+    Four: "4",
+    Five: "5",
+    Six: "6",
+    Seven: "7",
+    Eight: "8",
+    Nine: "9",
+    Ten: "10",
+    Jack: "jack",
+    Queen: "queen",
+    King: "king"
+};
+
+const SUIT_TO_FILENAME = {
+    Diamond: "diamonds",
+    Spade: "spades",
+    Club: "clubs",
+    Heart: "hearts"
+};
+
+const CARD_IMG_BASE = "/assets/Playing Cards/Playing Cards/PNG-cards-1.3";
+
+function card_to_filename(card) {
+    const rank = RANK_TO_FILENAME[card.rank];
+    const suit = SUIT_TO_FILENAME[card.suit];
+
+    if (!rank || !suit) {
+        console.error("Unknown card format", card);
+        return "";
+    }
+
+    return `${rank}_of_${suit}.png`;
+}
 
 
 
@@ -115,12 +157,22 @@ function handle_server_event(type, data) {
             start_game_ui();
             break;
 
-        case "SeatOrder":
-          server_seats = data.seats;
-          seats = rotate_seats(server_seats, player_id);
+        case "SeatOrder": {
+            const zipped = data.seats.map((id, i) => ({
+                id,
+                count: data.counts[i]
+            }));
 
-          render_opponents();
-          break;
+            const idx = zipped.findIndex(p => p.id === player_id);
+            if (idx === -1) return;
+
+            const rotated = zipped.slice(idx).concat(zipped.slice(0, idx));
+
+            seats = rotated; // now seats is [{id, count}, ...]
+            render_opponents();
+            break;
+        }
+
         
         case "NextTurn":
           current_turn_player = data.player_id;
@@ -129,19 +181,26 @@ function handle_server_event(type, data) {
           break;
 
         case "CardPlayed": {
-          const { card, p_id } = data;
+            if (discardTimeout) {
+                clearTimeout(discardTimeout);
+                discardTimeout = null;
+            }
 
-          // 1. Update pile for everyone
-          pile.push(card);
-          render_pile(card);
+            const { card, p_id } = data;
+            pile.push(card);
+            render_pile(card);
 
-          // 2. If THIS client played the card, remove from hand
-          if (p_id === player_id) {
-              remove_card_from_hand(card);
-          }
+            update_player_count(p_id, -1);
 
-          break;
+            if (p_id === player_id) {
+                remove_card_from_hand(card);
+            }
+
+            render_opponents();
+            break;
         }
+
+
 
 
         case "Error":
@@ -149,20 +208,23 @@ function handle_server_event(type, data) {
             break;
 
         case "FoulGiven": {
-          const { from, to, cards } = data;
+            const { from, to, cards } = data;
 
-          // Only the punished player updates their hand
-          if (to === player_id) {
-              hand = hand.concat(cards);
-              render_hand();
-              status.textContent = `You received ${cards.length} penalty card(s)`;
-          } else {
-              // Optional: just show info, no state change
-              status.textContent = `Player ${to} received ${cards.length} penalty card(s)`;
-          }
+            update_player_count(to, cards.length);
 
-          break;
+            if (to === player_id) {
+                hand = hand.concat(cards);
+                render_hand();
+            }
+
+            render_opponents();
+
+            show_toast(`Player ${to} received a foul (+${cards.length})`);
+            break;
         }
+
+
+
 
         case "PlayerWon": {
             const winnerId = data.player_id;
@@ -174,6 +236,21 @@ function handle_server_event(type, data) {
 
             break;
         }
+
+        case "DiscardPile": {
+            if (discardTimeout) {
+                clearTimeout(discardTimeout);
+            }
+
+            discardTimeout = setTimeout(() => {
+                pile = [];
+                clear_pile();
+                discardTimeout = null;
+            }, 1000);
+
+            break;
+        }
+
 
         case "EndGame": {
           if (game_over) return;
@@ -241,37 +318,85 @@ function start_game_ui() {
 }
 
 
-function render_hand() {
-    const handDiv = document.getElementById("hand");
-    handDiv.innerHTML = "";
+// function render_hand() {
+//     const handDiv = document.getElementById("hand");
+//     handDiv.innerHTML = "";
 
-    for (const card of hand) {
-        const el = document.createElement("div");
-        el.className = "card";
+//     for (const card of hand) {
+//         const el = document.createElement("div");
+//         el.className = "card";
 
-        el.textContent = `${card.rank} ${card.suit}`;
+//         el.textContent = `${card.rank} ${card.suit}`;
 
-        el.onclick = () => {
-            play_card(card);
-        };
+//         el.onclick = () => {
+//             play_card(card);
+//         };
 
-        handDiv.appendChild(el);
-    }
-}
+//         handDiv.appendChild(el);
+//     }
+// }
 
 
+// function render_opponents() {
+//     const oppDiv = document.getElementById("opponents");
+//     oppDiv.innerHTML = "";
+
+//     // index 0 is YOU, so start from 1
+//     for (let i = 1; i < seats.length; i++) {
+//         const pid = seats[i];
+//         const count = card_counts[i];
+
+//         const el = document.createElement("div");
+//         el.className = "opponent";
+//         el.dataset.playerId = pid;
+
+//         const name = document.createElement("div");
+//         name.className = "opponent-name";
+//         name.textContent = `Player ${pid}`;
+
+//         const cards = document.createElement("div");
+//         cards.className = "opponent-cards";
+
+//         for (let c = 0; c < count; c++) {
+//             const back = document.createElement("div");
+//             back.className = "opponent-card";
+//             cards.appendChild(back);
+//         }
+
+//         el.appendChild(name);
+//         el.appendChild(cards);
+//         oppDiv.appendChild(el);
+//     }
+
+//     highlight_active_player();
+// }
 function render_opponents() {
     const oppDiv = document.getElementById("opponents");
     oppDiv.innerHTML = "";
 
+    // seats = [{ id, count }, ...]  (rotated, self at index 0)
     for (let i = 1; i < seats.length; i++) {
-        const pid = seats[i];
+        const { id, count } = seats[i];
 
         const el = document.createElement("div");
         el.className = "opponent";
-        el.dataset.playerId = pid;
+        el.dataset.playerId = id;
 
-        el.textContent = `Player ${pid}`;
+        const name = document.createElement("div");
+        name.className = "opponent-name";
+        name.textContent = `Player ${id}`;
+
+        const cards = document.createElement("div");
+        cards.className = "opponent-cards";
+
+        for (let c = 0; c < count; c++) {
+            const back = document.createElement("div");
+            back.className = "opponent-card";
+            cards.appendChild(back);
+        }
+
+        el.appendChild(name);
+        el.appendChild(cards);
         oppDiv.appendChild(el);
     }
 
@@ -279,24 +404,31 @@ function render_opponents() {
 }
 
 
-function play_card(card) {
-    send_action({
-        CardPlayedByPlayer: {
-            player_id: player_id,
-            card: card
-        }
-    });
-}
 
-function rotate_seats(seats, player_id) {
+
+
+// function play_card(card) {
+//     send_action({
+//         CardPlayedByPlayer: {
+//             player_id: player_id,
+//             card: card
+//         }
+//     });
+// }
+
+function rotate_seats(data, player_id) {
+    const { seats, counts } = data;
+
     const idx = seats.indexOf(player_id);
-
     if (idx === -1) {
         console.warn("player_id not found in seats", player_id, seats);
-        return seats;
+        return data;
     }
 
-    return seats.slice(idx).concat(seats.slice(0, idx));
+    return {
+        seats: seats.slice(idx).concat(seats.slice(0, idx)),
+        counts: counts.slice(idx).concat(counts.slice(0, idx)),
+    };
 }
 
 
@@ -375,9 +507,15 @@ function remove_card_from_hand(card) {
 function render_pile(card) {
     const pileDiv = document.getElementById("pile");
 
-    // Show the top card only
-    pileDiv.textContent = `${card.rank} ${card.suit}`;
+    const img = document.createElement("img");
+    img.className = "card";
+    img.src = `${CARD_IMG_BASE}/${card_to_filename(card)}`;
+    img.alt = `${card.rank} of ${card.suit}`;
+    img.draggable = false;
+
+    pileDiv.appendChild(img);
 }
+
 
 
 function show_end_game_screen(loserId) {
@@ -402,3 +540,63 @@ function show_end_game_screen(loserId) {
         endMessage.textContent = `Player ${loserId} lost the game`;
     }
 }
+
+
+function render_hand() {
+    // img.onclick = () => {
+    //     console.log("CARD CLICKED", card, {
+    //         current_turn_player,
+    //         player_id
+    //     });
+    //     play_card(card);
+    // };
+
+    const handDiv = document.getElementById("hand");
+    handDiv.innerHTML = "";
+
+    for (const card of hand) {
+        const img = document.createElement("img");
+        img.className = "card";
+
+        img.src = `${CARD_IMG_BASE}/${card_to_filename(card)}`;
+        img.alt = `${card.rank} of ${card.suit}`;
+        img.draggable = false;
+
+        img.onclick = () => {
+            play_card(card);
+        };
+
+        handDiv.appendChild(img);
+    }
+}
+
+function clear_pile() {
+    const pileDiv = document.getElementById("pile");
+    pileDiv.innerHTML = "";
+}
+
+
+
+function show_toast(message, duration = 1500) {
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.classList.remove("hidden");
+
+    // Clear previous timeout if any
+    if (toastTimeout) {
+        clearTimeout(toastTimeout);
+    }
+
+    toastTimeout = setTimeout(() => {
+        toast.classList.add("hidden");
+    }, duration);
+}
+function update_player_count(player_id, delta) {
+    const seat = seats.find(s => s.id === player_id);
+    if (!seat) return;
+
+    seat.count = Math.max(0, seat.count + delta);
+}
+
+

@@ -1,9 +1,10 @@
 use axum::Router;
 use tokio::net::TcpListener;
 use tokio::signal;
-pub struct Server{
-    listener : TcpListener,
 
+
+pub struct Server{
+listener : TcpListener,
 }
 
 impl Server {

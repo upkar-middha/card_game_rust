@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -142,42 +142,45 @@
         }
     </style>
 </head>
-<body>
+<body> -->
 
 <!-- ========================= -->
 <!-- LOBBY SCREEN -->
 <!-- ========================= -->
 
-<div id="lobby" class="screen active">
+<!-- <div id="lobby" class="screen active">
     <h1>Card Game</h1>
     <button id="playBtn">Play</button>
     <p id="status">Connecting...</p>
-</div>
+</div> -->
 
 <!-- ========================= -->
 <!-- GAME SCREEN -->
 <!-- ========================= -->
 
-<div id="game" class="screen">
+<!-- <div id="game" class="screen">
 
-    <!-- Opponents -->
+     Opponents 
     <div id="opponents"></div>
 
-    <!-- Center pile -->
+     Center pile 
     <div id="center">
         <div id="pile">Pile</div>
     </div>
 
-    <!-- Your hand -->
+     Your hand 
     <div id="hand"></div>
 
 </div>
+
+<div id="toast" class="toast hidden"></div> -->
+
 
 <!-- ========================= -->
 <!-- END GAME SCREEN -->
 <!-- ========================= -->
 
-<div id="endGame" class="screen">
+<!-- <div id="endGame" class="screen">
     <div>
         <h1 id="endTitle"></h1>
         <p id="endMessage"></p>
@@ -187,5 +190,133 @@
 
 
 <script src="/assets/ws_test.js"></script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spades</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div id="app">
+
+    <!-- ══════════════════════════════ -->
+    <!--          LOBBY SCREEN          -->
+    <!-- ══════════════════════════════ -->
+    <div id="screen-lobby" class="screen active">
+        <div class="felt-noise"></div>
+
+        <div class="lobby-wrap">
+            <div class="lobby-emblem">♠</div>
+            <h1 class="lobby-title">Spades</h1>
+            <p class="lobby-sub">A Game of Suits &amp; Cunning</p>
+
+            <!-- Step 1: Name -->
+            <div id="step-name" class="step active">
+                <div class="input-group">
+                    <input id="nameInput" type="text" placeholder="Your name…" maxlength="16" autocomplete="off">
+                    <button id="setNameBtn" class="btn-gold" onclick="send_name()">Enter</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Room Actions -->
+            <div id="step-room" class="step">
+                <p class="greeting" id="greeting"></p>
+
+                <div class="room-actions">
+                    <button class="btn-action" onclick="create_room()">
+                        <span class="btn-icon">✦</span>
+                        <span>Create Room</span>
+                    </button>
+
+                    <div class="divider-or">or</div>
+
+                    <div class="join-row">
+                        <input id="roomInput" type="number" placeholder="Room ID" min="0">
+                        <button class="btn-action small" onclick="join_room()">Join</button>
+                    </div>
+                </div>
+
+                <div id="roomInfo" class="room-info hidden"></div>
+
+                <div id="waiting-panel" class="waiting-panel hidden">
+                    <p id="waiting-names" class="waiting-names"></p>
+                    <button class="btn-ready" id="readyBtn" onclick="send_ready()">Ready Up</button>
+                    <p class="waiting-hint">All players must ready up to start</p>
+                </div>
+            </div>
+
+            <div id="status" class="status-line">Connecting…</div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════ -->
+    <!--          GAME SCREEN           -->
+    <!-- ══════════════════════════════ -->
+    <div id="screen-game" class="screen">
+        <div class="felt-noise"></div>
+
+        <!-- Header bar -->
+        <div class="game-bar">
+            <div class="bar-left">
+                <span class="bar-emblem">♠</span>
+                <span id="bar-room" class="bar-room"></span>
+            </div>
+            <div id="bar-turn" class="bar-turn">—</div>
+            <div class="bar-right">
+                <button class="btn-leave" onclick="leave_room()">Leave</button>
+            </div>
+        </div>
+
+        <!-- Table oval -->
+        <div class="table-wrap">
+            <div class="table-oval">
+
+                <!-- Opponents (top arc) -->
+                <div id="opponents" class="opponents-row"></div>
+
+                <!-- Pile in the centre -->
+                <div class="pile-zone">
+                    <div id="pile-label" class="pile-label">No cards played</div>
+                    <div id="pile" class="pile"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Player hand (bottom) -->
+        <div class="player-zone">
+            <div class="player-label">Your Hand</div>
+            <div id="hand" class="hand"></div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════ -->
+    <!--         END GAME SCREEN        -->
+    <!-- ══════════════════════════════ -->
+    <div id="screen-end" class="screen">
+        <div class="felt-noise"></div>
+        <div class="end-wrap">
+            <div class="end-suit" id="end-suit">♠</div>
+            <h2 id="endTitle" class="end-title">Game Over</h2>
+            <p id="endMessage" class="end-message"></p>
+            <button class="btn-gold wide" onclick="location.reload()">Play Again</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+</div>
+
+<script src="assets/app.js"></script>
 </body>
 </html>
