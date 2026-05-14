@@ -1,322 +1,291 @@
-<!--<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Card Game</title>
-
-    <link rel="stylesheet" href="/assets/styles.css">
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background: #0f172a;
-            color: #e5e7eb;
-            height: 100vh;
-        }
-
-        .screen {
-            display: none;
-            height: 100%;
-        }
-
-        .screen.active {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* ---------- LOBBY ---------- */
-
-        #lobby {
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        #playBtn {
-            padding: 12px 24px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        #status {
-            opacity: 0.85;
-            font-size: 16px;
-        }
-
-        /* ---------- GAME ---------- */
-
-        #game {
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* Opponents */
-        #opponents {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-        }
-
-        .opponent {
-            background: #1f2933;
-            padding: 10px 14px;
-            border-radius: 8px;
-            text-align: center;
-            min-width: 120px;
-            transition: box-shadow 0.2s, transform 0.2s;
-        }
-
-        /* Highlight active opponent */
-        .opponent.active-turn {
-            outline: 3px solid #22c55e;
-            box-shadow: 0 0 12px #22c55e;
-            transform: translateY(-2px);
-        }
-
-        /* Center pile */
-        #center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 120px;
-        }
-
-        #pile {
-            width: 80px;
-            height: 110px;
-            background: #374151;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-        }
-
-        /* Player hand */
-        #hand {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            transition: opacity 0.2s, box-shadow 0.2s;
-        }
-
-        /* Disable interaction when not your turn */
-        #hand.disabled {
-            pointer-events: none;
-            opacity: 0.4;
-        }
-
-        /* Highlight YOUR turn */
-        #hand.active-turn {
-            outline: 3px solid #22c55e;
-            box-shadow: 0 0 12px #22c55e;
-            padding: 6px;
-            border-radius: 10px;
-        }
-
-        .card {
-            width: 70px;
-            height: 100px;
-            background: #ffffff;
-            color: #111827;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            font-size: 14px;
-            cursor: pointer;
-            user-select: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-            transition: transform 0.15s;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-        }
-    </style>
-</head>
-<body> -->
-
-<!-- ========================= -->
-<!-- LOBBY SCREEN -->
-<!-- ========================= -->
-
-<!-- <div id="lobby" class="screen active">
-    <h1>Card Game</h1>
-    <button id="playBtn">Play</button>
-    <p id="status">Connecting...</p>
-</div> -->
-
-<!-- ========================= -->
-<!-- GAME SCREEN -->
-<!-- ========================= -->
-
-<!-- <div id="game" class="screen">
-
-     Opponents 
-    <div id="opponents"></div>
-
-     Center pile 
-    <div id="center">
-        <div id="pile">Pile</div>
-    </div>
-
-     Your hand 
-    <div id="hand"></div>
-
-</div>
-
-<div id="toast" class="toast hidden"></div> -->
-
-
-<!-- ========================= -->
-<!-- END GAME SCREEN -->
-<!-- ========================= -->
-
-<!-- <div id="endGame" class="screen">
-    <div>
-        <h1 id="endTitle"></h1>
-        <p id="endMessage"></p>
-        <button onclick="location.reload()">Restart</button>
-    </div>
-</div>
-
-
-<script src="/assets/ws_test.js"></script>
-</body>
-</html> -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spades</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css">
+    <title>SPADER-MAN♠</title>
+    <link rel="icon" href="/assets/favicon.ico"/>
+    <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body>
 
 <div id="app">
 
-    <!-- ══════════════════════════════ -->
-    <!--          LOBBY SCREEN          -->
-    <!-- ══════════════════════════════ -->
-    <div id="screen-lobby" class="screen active">
-        <div class="felt-noise"></div>
+    <!-- ================================================= -->
+    <!--                  CONNECT SCREEN                    -->
+    <!-- ================================================= -->
+    <div id="screen-connect" class="screen active">
 
-        <div class="lobby-wrap">
-            <div class="lobby-emblem">♠</div>
-            <h1 class="lobby-title">Spades</h1>
-            <p class="lobby-sub">A Game of Suits &amp; Cunning</p>
+        <div class="window">
 
-            <!-- Step 1: Name -->
-            <div id="step-name" class="step active">
-                <div class="input-group">
-                    <input id="nameInput" type="text" placeholder="Your name…" maxlength="16" autocomplete="off">
-                    <button id="setNameBtn" class="btn-gold" onclick="send_name()">Enter</button>
-                </div>
-            </div>
+            <div class="logo">♠</div>
 
-            <!-- Step 2: Room Actions -->
-            <div id="step-room" class="step">
-                <p class="greeting" id="greeting"></p>
+            <h1 class="title">SPADER-MAN♠</h1>
 
-                <div class="room-actions">
-                    <button class="btn-action" onclick="create_room()">
-                        <span class="btn-icon">✦</span>
-                        <span>Create Room</span>
+            <p class="subtitle">
+                Multiplayer Card Game
+            </p>
+
+            <!-- Name -->
+            <div class="section">
+
+                <label for="nameInput">
+                    Player Name
+                </label>
+
+                <div class="row">
+
+                    <input
+                        type="text"
+                        id="nameInput"
+                        placeholder="Enter your name"
+                        maxlength="16"
+                        autocomplete="off"
+                    >
+
+                    <button id="setNameBtn">
+                        Set Name
                     </button>
 
-                    <div class="divider-or">or</div>
-
-                    <div class="join-row">
-                        <input id="roomInput" type="number" placeholder="Room ID" min="0">
-                        <button class="btn-action small" onclick="join_room()">Join</button>
-                    </div>
                 </div>
 
-                <div id="roomInfo" class="room-info hidden"></div>
-
-                <div id="waiting-panel" class="waiting-panel hidden">
-                    <p id="waiting-names" class="waiting-names"></p>
-                    <button class="btn-ready" id="readyBtn" onclick="send_ready()">Ready Up</button>
-                    <p class="waiting-hint">All players must ready up to start</p>
-                </div>
             </div>
 
-            <div id="status" class="status-line">Connecting…</div>
+            <!-- Room Controls -->
+            <div class="section">
+
+                <button
+                    id="createRoomBtn"
+                    disabled
+                >
+                    Create Room
+                </button>
+
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+
+                <div class="row">
+
+                    <input
+                        type="number"
+                        id="roomIdInput"
+                        placeholder="Room ID"
+                    >
+
+                    <button
+                        id="joinRoomBtn"
+                        disabled
+                    >
+                        Join Room
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Status -->
+            <div
+                id="connectStatus"
+                class="status"
+            >
+                Connecting to server...
+            </div>
+
         </div>
+
     </div>
 
-    <!-- ══════════════════════════════ -->
-    <!--          GAME SCREEN           -->
-    <!-- ══════════════════════════════ -->
-    <div id="screen-game" class="screen">
-        <div class="felt-noise"></div>
 
-        <!-- Header bar -->
+
+
+
+    <!-- ================================================= -->
+    <!--                    ROOM SCREEN                     -->
+    <!-- ================================================= -->
+    <div id="screen-room" class="screen hidden">
+
+        <div class="window">
+
+            <h2 class="room-title">
+                Room Lobby
+            </h2>
+
+            <div class="room-info">
+
+                <div>
+                    Room ID:
+                    <span id="roomIdText">----</span>
+                </div>
+
+                <div>
+                    Players:
+                    <span id="playerCountText">0</span>
+                </div>
+
+            </div>
+
+            <!-- Player List -->
+            <div
+                id="playerList"
+                class="player-list"
+            >
+
+                <!-- Example -->
+                <!--
+                <div class="player-card">
+                    Alice
+                </div>
+                -->
+
+            </div>
+
+            <!-- Ready -->
+            <div class="room-actions">
+
+                <button id="readyBtn">
+                    Ready Up
+                </button>
+
+                <button id="leaveRoomBtn">
+                    Leave Room
+                </button>
+
+            </div>
+
+            <!-- Room Status -->
+            <div
+                id="roomStatus"
+                class="status"
+            >
+                Waiting for players...
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <!-- ================================================= -->
+    <!--                    GAME SCREEN                     -->
+    <!-- ================================================= -->
+    <div id="screen-game" class="screen hidden">
+
+        <!-- Top Bar -->
         <div class="game-bar">
+
             <div class="bar-left">
-                <span class="bar-emblem">♠</span>
-                <span id="bar-room" class="bar-room"></span>
+                SPADER-MAN♠
             </div>
-            <div id="bar-turn" class="bar-turn">—</div>
+
+            <div
+                id="turnText"
+                class="bar-center"
+            >
+                Waiting for turn...
+            </div>
+
             <div class="bar-right">
-                <button class="btn-leave" onclick="leave_room()">Leave</button>
+
+                Room:
+                <span id="gameRoomId">
+                    ----
+                </span>
+
             </div>
+
         </div>
 
-        <!-- Table oval -->
-        <div class="table-wrap">
-            <div class="table-oval">
+        <!-- Table -->
+        <div class="table-area">
 
-                <!-- Opponents (top arc) -->
-                <div id="opponents" class="opponents-row"></div>
+            <!-- Opponents -->
+            <div
+                id="opponents"
+                class="opponents"
+            >
 
-                <!-- Pile in the centre -->
-                <div class="pile-zone">
-                    <div id="pile-label" class="pile-label">No cards played</div>
-                    <div id="pile" class="pile"></div>
+                <!-- dynamically rendered -->
+
+            </div>
+
+            <!-- Center Pile -->
+            <div class="pile-area">
+
+                <div class="pile-label">
+                    Current Trick
+                </div>
+
+                <div
+                    id="pile"
+                    class="pile"
+                >
+
+                    <!-- cards rendered here -->
+
                 </div>
 
             </div>
+
         </div>
 
-        <!-- Player hand (bottom) -->
-        <div class="player-zone">
-            <div class="player-label">Your Hand</div>
-            <div id="hand" class="hand"></div>
+        <!-- Player Hand -->
+        <div class="hand-area">
+
+            <div class="hand-label">
+                Your Hand
+            </div>
+
+            <div
+                id="hand"
+                class="hand"
+            >
+
+                <!-- player cards -->
+
+            </div>
+
         </div>
+
     </div>
 
-    <!-- ══════════════════════════════ -->
-    <!--         END GAME SCREEN        -->
-    <!-- ══════════════════════════════ -->
-    <div id="screen-end" class="screen">
-        <div class="felt-noise"></div>
-        <div class="end-wrap">
-            <div class="end-suit" id="end-suit">♠</div>
-            <h2 id="endTitle" class="end-title">Game Over</h2>
-            <p id="endMessage" class="end-message"></p>
-            <button class="btn-gold wide" onclick="location.reload()">Play Again</button>
-        </div>
-    </div>
 
-    <!-- Toast -->
-    <div id="toast" class="toast hidden"></div>
+
+
+
+    <!-- ================================================= -->
+    <!--                     END SCREEN                     -->
+    <!-- ================================================= -->
+    <div id="screen-end" class="screen hidden">
+
+        <div class="window">
+
+            <div class="logo">
+                ♠
+            </div>
+
+            <h2 id="endTitle">
+                Game Over
+            </h2>
+
+            <p id="endMessage">
+                Winner: ---
+            </p>
+
+            <button id="playAgainBtn">
+                Back To Lobby
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
-<script src="assets/app.js"></script>
+<script src="/assets/ws_test.js"></script>
+<div id="toast" class="toast hidden"></div>
 </body>
 </html>

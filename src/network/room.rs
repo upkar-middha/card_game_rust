@@ -55,7 +55,7 @@ impl Room {
                         let _ = self.interface_tx.send(InterfaceRequests::GameStarted { tx }).await;
                         continue;
                     }
-                    
+                    // println!("adding player : {name}");
                     self.send_to_player.insert(p_id, tx.clone());
                     let s_msg = self.game.add_player(p_id , name);
                     let _ = self.interface_tx.send(InterfaceRequests::RoomJoinSuccess { p_id, r_id: self.id.clone(), tx:tx.clone() }).await;

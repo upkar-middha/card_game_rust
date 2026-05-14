@@ -30,7 +30,7 @@ pub enum Event {
 
 
     SpecialEvent {p_id : PlayerId , card : Card , from : PlayerId},
-    PlayerAdded{p_id : PlayerId , name : String},
+    PlayerAdded{p_id : PlayerId , name : String}, // it's a room message though
 
     
 

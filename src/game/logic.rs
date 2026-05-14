@@ -155,7 +155,7 @@ impl Game{
 
     pub fn start_game(&mut self) {
         self.reset();
-
+        self.phase = GamePhase::Playing; // nice error diddy
         shuffle(&mut self.deck);
         self.distribute();
 
@@ -186,6 +186,7 @@ impl Game{
     pub fn un_ready_all(&mut self) {
         for player in &mut self.players {
             player.ready = false;
+            player.player_state = super::players::PlayerState::InGame;
         }
     }
 
