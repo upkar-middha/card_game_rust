@@ -9,12 +9,5 @@ A turn based online multiplayer card game prototype with authorative server mode
 + last player standing looses the game.
 
 # Working
-
-+ Communication is being done by using webSockets as they are easy to use and sufficient for a turn based event driven game. I have used Axum crate for communication between client and server.
-+ Using async functions with the help of tokio crate to manage websockets.
-+ Players can send 3 type of Actions : Ready , CardPlayed and Endgame
-+ When everyone marks ready , game is started automatically , send each player hand , its id as a private msg , subsequent messages are broadcasted to each client during the game.
-+ If a player leaves game is aborted instantly.
-+ Server send Events to all the clients and based on those events updation happens on the client side , client can not make decision on there own.
-+ There are number of Events like cardPlayed , NextTurn , Foul , winner , endgame , etc
++ work in progress.....
   
